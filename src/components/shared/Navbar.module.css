@@ -1,0 +1,209 @@
+.header {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  border-bottom: 1px solid #1b1c1f;
+  background: #0b0c0e;
+  color: #d5d6dc;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: min(100% - 48px, 1540px);
+  min-height: 100px;
+  margin-inline: auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 13px;
+  color: #f1f1f3;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: block;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.brandName {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: 24px;
+  font-stretch: condensed;
+  font-weight: 700;
+  letter-spacing: .025em;
+  line-height: 1;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 100%;
+}
+
+.navLink {
+  display: inline-flex;
+  min-height: 35px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  border-radius: 999px;
+  color: #a6a8b0;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+.navLink:hover {
+  color: #eff0f2;
+}
+
+.active {
+  background: #1a2110;
+  color: #c9ff00;
+}
+
+.active:hover {
+  color: #d7ff37;
+}
+
+.badges {
+  display: flex;
+  justify-self: end;
+  align-items: center;
+  gap: 28px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #a6a8b0;
+  font-size: 14px;
+  font-weight: 450;
+  text-decoration: none;
+}
+
+.badge:hover {
+  color: #f0f0f2;
+}
+
+.planBadge {
+  color: #d4d5d9;
+}
+
+.badgeCount {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.planBadge .badgeCount {
+  background: #c9ff00;
+  color: #101207;
+  font-weight: 700;
+}
+
+.savedBadge .badgeCount {
+  border: 1px solid #383a40;
+  color: #d1d2d8;
+}
+
+@media (max-width: 700px) {
+  .inner {
+    width: min(100% - 32px, 1540px);
+    min-height: 82px;
+    grid-template-columns: 1fr auto;
+    row-gap: 0;
+  }
+
+  .brand {
+    gap: 9px;
+  }
+
+  .brandMark {
+    width: 29px;
+    height: 29px;
+  }
+
+  .brandName {
+    font-size: 21px;
+  }
+
+  .navigation {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: center;
+    gap: 4px;
+    padding-bottom: 8px;
+  }
+
+  .navLink {
+    min-height: 31px;
+    padding-inline: 14px;
+    font-size: 12px;
+  }
+
+  .badges {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 13px;
+  }
+
+  .badge {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .badgeCount {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .inner {
+    width: calc(100% - 24px);
+  }
+
+  .brand {
+    gap: 6px;
+  }
+
+  .brandMark {
+    width: 25px;
+    height: 25px;
+  }
+
+  .brandName {
+    font-size: 18px;
+  }
+
+  .badges {
+    gap: 8px;
+  }
+
+  .badge {
+    gap: 4px;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink {
+    transition: none;
+  }
+}
