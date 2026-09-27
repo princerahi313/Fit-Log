@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import LibraryCard from "@/components/shared/LibraryCard";
+import WorkoutLibraryGrid from "@/components/home/WorkoutLibraryGrid";
 import { getWorkouts } from "@/lib/workouts";
 
 export default async function Library() {
@@ -27,9 +27,7 @@ export default async function Library() {
         <p className="mt-[10px] text-[18px] leading-6 text-[#a3a8b4] max-[520px]:text-base">Twelve lifts covering every major muscle group.</p>
       </div>
 
-      <div className="grid grid-cols-3 items-stretch gap-[30px] max-[1050px]:grid-cols-2 max-[700px]:gap-5 max-[680px]:grid-cols-1 max-[520px]:gap-4">
-        {workouts.map((workout) => <LibraryCard key={workout.id} workout={workout} />)}
-      </div>
+      <WorkoutLibraryGrid workouts={workouts} />
     </section>
   );
 }

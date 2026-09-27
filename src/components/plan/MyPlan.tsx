@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useFitLog } from "@/components/shared/FitLogProvider";
+import WorkoutSearch from "@/components/shared/WorkoutSearch";
 import type { Workout } from "@/lib/workouts";
 
 type PlanTab = "plan" | "saved";
@@ -22,11 +23,19 @@ function WorkoutStats({ workout }: { workout: Workout }) {
 export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; initialTab: PlanTab }) {
   const [tab, setTab] = useState<PlanTab>(initialTab);
   const [sortBy, setSortBy] = useState<SortOption>("duration");
+  const [query, setQuery] = useState("");
   const { plannedIds, savedIds, doneIds, markDone, removeFromPlan } = useFitLog();
   const plannedWorkouts = plannedIds.map((id) => workouts.find((workout) => workout.id === id)).filter((workout): workout is Workout => Boolean(workout));
   const savedWorkouts = savedIds.map((id) => workouts.find((workout) => workout.id === id)).filter((workout): workout is Workout => Boolean(workout));
   const shownWorkouts = tab === "plan" ? plannedWorkouts : savedWorkouts;
-  const sortedWorkouts = [...shownWorkouts].sort((a, b) => {
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredWorkouts = normalizedQuery
+    ? shownWorkouts.filter((workout) =>
+        workout.name.toLowerCase().includes(normalizedQuery) ||
+        workout.muscleGroups.some((tag) => tag.toLowerCase().includes(normalizedQuery)),
+      )
+    : shownWorkouts;
+  const sortedWorkouts = [...filteredWorkouts].sort((a, b) => {
     if (sortBy === "calories") return a.caloriesBurned - b.caloriesBurned;
     if (sortBy === "rating") return a.rating - b.rating;
     return a.duration - b.duration;
@@ -54,7 +63,7 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
         ))}
       </section>
 
-      <div className="mb-[30px] mt-[40px] flex items-center justify-between gap-4 max-[520px]:flex-col max-[520px]:items-start">
+      <div className="mb-[30px] mt-[40px] flex items-center justify-between gap-4 max-[900px]:flex-wrap max-[520px]:flex-col max-[520px]:items-stretch">
         <div className="inline-flex rounded-[15px] border border-[#262932] bg-[#14161c] p-[5px]" role="tablist" aria-label="Workout lists">
           {(["plan", "saved"] as const).map((item) => (
             <button key={item} id={`${item}-tab`} type="button" role="tab" aria-selected={tab === item} aria-controls="workout-list" onClick={() => setTab(item)} className={`min-w-[135px] rounded-[11px] px-4 py-[10px] text-[14px] transition-colors max-[520px]:min-w-[110px] ${tab === item ? "bg-[#20232b] font-semibold text-[#f3f3f4]" : "text-[#9299a6] hover:text-[#f3f3f4]"}`}>
@@ -63,7 +72,11 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
           ))}
         </div>
 
-        <label className="flex items-center gap-[14px] text-[14px] text-[#9ca2ad] max-[520px]:w-full max-[520px]:justify-between">
+        <div className="min-w-[180px] max-w-[350px] flex-1 max-[900px]:order-2 max-[900px]:w-full max-[900px]:max-w-none">
+          <WorkoutSearch value={query} onChange={setQuery} placeholder="Search by name or tag" />
+        </div>
+
+        <label className="ml-auto flex items-center gap-[14px] text-[14px] text-[#9ca2ad] max-[900px]:order-3 max-[520px]:ml-0 max-[520px]:w-full max-[520px]:justify-between">
           <span>Sort By</span>
           <span className="relative inline-flex">
             <select value={sortBy} onChange={(event) => setSortBy(event.target.value as SortOption)} aria-label="Sort workouts by" className="h-[44px] w-[117px] appearance-none rounded-[12px] border border-[#262932] bg-[#14161c] pl-[13px] pr-9 text-[14px] text-[#e3e4e8] outline-none transition-colors focus:border-[#657522]">
@@ -81,6 +94,11 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
           <h2 className="font-[Impact,'Arial_Narrow',sans-serif] text-[28px] font-bold uppercase leading-none text-[#f3f3f4]">Nothing Here Yet</h2>
           <p className="mt-[10px] text-[14px] text-[#9ca2ad]">Browse the library and add a lift to get today moving.</p>
           <Link href="/" className="mt-[31px] inline-flex min-h-[46px] items-center justify-center rounded-full bg-[#c9ff00] px-[30px] text-[14px] font-semibold text-[#111207] no-underline shadow-[0_8px_20px_rgba(201,255,0,.14)] transition-colors hover:bg-[#d8ff45] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c9ff00]">Go to workouts</Link>
+        </section>
+      ) : sortedWorkouts.length === 0 ? (
+        <section id="workout-list" role="tabpanel" aria-labelledby={`${tab}-tab`} className="flex min-h-[240px] flex-col items-center justify-center rounded-[20px] border border-dashed border-[#292b32] px-5 text-center">
+          <p role="status" className="text-[16px] text-[#a3a8b4]">No workouts match “{query.trim()}”.</p>
+          <button type="button" onClick={() => setQuery("")} className="mt-4 text-sm font-semibold text-[#c9ff00] hover:text-[#d8ff45]">Clear search</button>
         </section>
       ) : (
         <section id="workout-list" role="tabpanel" aria-labelledby={`${tab}-tab`} className="space-y-[20px]">

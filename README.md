@@ -12,7 +12,7 @@ FitLog is a dark, responsive workout companion for choosing exercises, building 
 
 ## Key features
 
-1. **Workout library** — Browse twelve exercises with muscle-group tags, equipment, duration, calories, and ratings.
+1. **Workout library and search** — Browse twelve exercises, then filter the library or either My Plan tab by workout name or muscle-group tag.
 2. **Workout details** — View exercise illustrations, key specs, and step-by-step instructions.
 3. **Daily plan and saved workouts** — Add or save exercises, with selections and navbar counts persisted in the browser.
 4. **Session overview** — See planned exercise, minute, and calorie totals; sort the current list by duration, calories, or rating; mark exercises done or remove them.
