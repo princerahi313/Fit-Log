@@ -7,6 +7,7 @@ import { useFitLog } from "@/components/shared/FitLogProvider";
 import type { Workout } from "@/lib/workouts";
 
 type PlanTab = "plan" | "saved";
+type SortOption = "duration" | "calories" | "rating";
 
 function WorkoutStats({ workout }: { workout: Workout }) {
   return (
@@ -20,10 +21,16 @@ function WorkoutStats({ workout }: { workout: Workout }) {
 
 export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; initialTab: PlanTab }) {
   const [tab, setTab] = useState<PlanTab>(initialTab);
+  const [sortBy, setSortBy] = useState<SortOption>("duration");
   const { plannedIds, savedIds } = useFitLog();
   const plannedWorkouts = plannedIds.map((id) => workouts.find((workout) => workout.id === id)).filter((workout): workout is Workout => Boolean(workout));
   const savedWorkouts = savedIds.map((id) => workouts.find((workout) => workout.id === id)).filter((workout): workout is Workout => Boolean(workout));
   const shownWorkouts = tab === "plan" ? plannedWorkouts : savedWorkouts;
+  const sortedWorkouts = [...shownWorkouts].sort((a, b) => {
+    if (sortBy === "calories") return a.caloriesBurned - b.caloriesBurned;
+    if (sortBy === "rating") return a.rating - b.rating;
+    return a.duration - b.duration;
+  });
   const minutes = plannedWorkouts.reduce((total, workout) => total + workout.duration, 0);
   const calories = plannedWorkouts.reduce((total, workout) => total + workout.caloriesBurned, 0);
 
@@ -47,12 +54,26 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
         ))}
       </section>
 
-      <div className="mb-[30px] mt-[40px] inline-flex rounded-[15px] border border-[#262932] bg-[#14161c] p-[5px]" role="tablist" aria-label="Workout lists">
-        {(["plan", "saved"] as const).map((item) => (
-          <button key={item} id={`${item}-tab`} type="button" role="tab" aria-selected={tab === item} aria-controls="workout-list" onClick={() => setTab(item)} className={`min-w-[135px] rounded-[11px] px-4 py-[10px] text-[14px] transition-colors max-[520px]:min-w-[110px] ${tab === item ? "bg-[#20232b] font-semibold text-[#f3f3f4]" : "text-[#9299a6] hover:text-[#f3f3f4]"}`}>
-            {item === "plan" ? "Today’s Plan" : "Saved"}
-          </button>
-        ))}
+      <div className="mb-[30px] mt-[40px] flex items-center justify-between gap-4 max-[520px]:flex-col max-[520px]:items-start">
+        <div className="inline-flex rounded-[15px] border border-[#262932] bg-[#14161c] p-[5px]" role="tablist" aria-label="Workout lists">
+          {(["plan", "saved"] as const).map((item) => (
+            <button key={item} id={`${item}-tab`} type="button" role="tab" aria-selected={tab === item} aria-controls="workout-list" onClick={() => setTab(item)} className={`min-w-[135px] rounded-[11px] px-4 py-[10px] text-[14px] transition-colors max-[520px]:min-w-[110px] ${tab === item ? "bg-[#20232b] font-semibold text-[#f3f3f4]" : "text-[#9299a6] hover:text-[#f3f3f4]"}`}>
+              {item === "plan" ? "Today’s Plan" : "Saved"}
+            </button>
+          ))}
+        </div>
+
+        <label className="flex items-center gap-[14px] text-[14px] text-[#9ca2ad] max-[520px]:w-full max-[520px]:justify-between">
+          <span>Sort By</span>
+          <span className="relative inline-flex">
+            <select value={sortBy} onChange={(event) => setSortBy(event.target.value as SortOption)} aria-label="Sort workouts by" className="h-[44px] w-[117px] appearance-none rounded-[12px] border border-[#262932] bg-[#14161c] pl-[13px] pr-9 text-[14px] text-[#e3e4e8] outline-none transition-colors focus:border-[#657522]">
+              <option value="duration">Duration</option>
+              <option value="calories">Calories</option>
+              <option value="rating">Rating</option>
+            </select>
+            <svg aria-hidden="true" viewBox="0 0 20 20" className="pointer-events-none absolute right-[10px] top-1/2 h-4 w-4 -translate-y-1/2 fill-none stroke-[#9ca2ad] stroke-[1.6]"><path d="m5 7.5 5 5 5-5" /></svg>
+          </span>
+        </label>
       </div>
 
       {shownWorkouts.length === 0 ? (
@@ -63,7 +84,7 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
         </section>
       ) : (
         <section id="workout-list" role="tabpanel" aria-labelledby={`${tab}-tab`} className="space-y-[20px]">
-          {shownWorkouts.map((workout) => (
+          {sortedWorkouts.map((workout) => (
             <article key={workout.id} className="flex min-h-[142px] items-center gap-5 rounded-[20px] border border-[#262932] bg-[#14161c] p-5 max-[700px]:flex-wrap max-[520px]:gap-4 max-[520px]:p-4">
               <div className="relative h-[100px] w-[180px] shrink-0 overflow-hidden rounded-[12px] bg-[#202126] max-[520px]:h-[88px] max-[520px]:w-[120px]">
                 <Image src={workout.image} alt="" fill unoptimized sizes="180px" className="object-cover" />
