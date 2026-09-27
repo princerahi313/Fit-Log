@@ -50,6 +50,10 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
       announce("This workout is already in today’s plan");
       return;
     }
+    if (plannedIds.length >= 5) {
+      announce("Today’s plan is limited to five lifts");
+      return;
+    }
     setPlannedIds((current) => current.includes(id) ? current : [...current, id]);
     announce("Added to today’s plan");
   }, [announce, plannedIds]);
