@@ -1,9 +1,11 @@
+import { connection } from "next/server";
 import LibraryCard from "@/components/shared/LibraryCard";
 import { getWorkouts } from "@/lib/workouts";
 
 export default async function Library() {
-  let workouts;
+  await connection();
 
+  let workouts;
   try {
     workouts = await getWorkouts();
   } catch (error) {
