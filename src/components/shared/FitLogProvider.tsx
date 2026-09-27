@@ -79,7 +79,6 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
         draggable={false}
         theme="dark"
         toastClassName="!min-h-0 !rounded-xl !border !border-[#3b4325] !bg-[#1a2110] !px-5 !py-3 !text-sm !font-medium !text-[#d7ff37] !shadow-[0_12px_36px_rgba(0,0,0,.45)]"
-        bodyClassName="!p-0 !text-inherit"
       />
     </FitLogContext.Provider>
   );
