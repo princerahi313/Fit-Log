@@ -8,8 +8,11 @@ import Footer from "@/components/shared/footer";
 type FitLogContextValue = {
   plannedIds: number[];
   savedIds: number[];
+  doneIds: number[];
   addToPlan: (id: number) => void;
   saveForLater: (id: number) => void;
+  markDone: (id: number) => void;
+  removeFromPlan: (id: number) => void;
 };
 
 const STORAGE_KEY = "fitlog-workouts-v1";
@@ -18,6 +21,7 @@ const FitLogContext = createContext<FitLogContextValue | null>(null);
 export function FitLogProvider({ children }: { children: ReactNode }) {
   const [plannedIds, setPlannedIds] = useState<number[]>([]);
   const [savedIds, setSavedIds] = useState<number[]>([]);
+  const [doneIds, setDoneIds] = useState<number[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -25,13 +29,15 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
       const stored = localStorage.getItem(STORAGE_KEY);
       const parsed: unknown = stored ? JSON.parse(stored) : null;
       if (typeof parsed === "object" && parsed !== null) {
-        const state = parsed as { planned?: unknown; saved?: unknown };
+        const state = parsed as { planned?: unknown; saved?: unknown; done?: unknown };
         setPlannedIds(Array.isArray(state.planned) ? state.planned.filter((id): id is number => Number.isInteger(id)) : []);
         setSavedIds(Array.isArray(state.saved) ? state.saved.filter((id): id is number => Number.isInteger(id)) : []);
+        setDoneIds(Array.isArray(state.done) ? state.done.filter((id): id is number => Number.isInteger(id)) : []);
       }
     } catch {
       setPlannedIds([]);
       setSavedIds([]);
+      setDoneIds([]);
     }
     setReady(true);
   }, []);
@@ -39,11 +45,11 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!ready) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ planned: plannedIds, saved: savedIds }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ planned: plannedIds, saved: savedIds, done: doneIds }));
     } catch (error) {
       console.error("Could not save FitLog workout selections:", error);
     }
-  }, [plannedIds, ready, savedIds]);
+  }, [doneIds, plannedIds, ready, savedIds]);
 
   const announce = useCallback((message: string) => toast(message), []);
   const addToPlan = useCallback((id: number) => {
@@ -67,8 +73,24 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     announce("Saved for later");
   }, [announce, savedIds]);
 
+  const markDone = useCallback((id: number) => {
+    if (doneIds.includes(id)) {
+      announce("This workout is already marked done");
+      return;
+    }
+    setDoneIds((current) => current.includes(id) ? current : [...current, id]);
+    announce("Workout marked as done");
+  }, [announce, doneIds]);
+
+  const removeFromPlan = useCallback((id: number) => {
+    if (!plannedIds.includes(id)) return;
+    setPlannedIds((current) => current.filter((workoutId) => workoutId !== id));
+    setDoneIds((current) => current.filter((workoutId) => workoutId !== id));
+    announce("Removed from today’s plan");
+  }, [announce, plannedIds]);
+
   return (
-    <FitLogContext.Provider value={{ plannedIds, savedIds, addToPlan, saveForLater }}>
+    <FitLogContext.Provider value={{ plannedIds, savedIds, doneIds, addToPlan, saveForLater, markDone, removeFromPlan }}>
       {children}
       <Footer />
       <ToastContainer

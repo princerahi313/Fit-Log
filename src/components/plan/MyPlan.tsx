@@ -22,7 +22,7 @@ function WorkoutStats({ workout }: { workout: Workout }) {
 export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; initialTab: PlanTab }) {
   const [tab, setTab] = useState<PlanTab>(initialTab);
   const [sortBy, setSortBy] = useState<SortOption>("duration");
-  const { plannedIds, savedIds } = useFitLog();
+  const { plannedIds, savedIds, doneIds, markDone, removeFromPlan } = useFitLog();
   const plannedWorkouts = plannedIds.map((id) => workouts.find((workout) => workout.id === id)).filter((workout): workout is Workout => Boolean(workout));
   const savedWorkouts = savedIds.map((id) => workouts.find((workout) => workout.id === id)).filter((workout): workout is Workout => Boolean(workout));
   const shownWorkouts = tab === "plan" ? plannedWorkouts : savedWorkouts;
@@ -94,7 +94,20 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
                 <p className="mt-[3px] text-[14px] leading-5 text-[#9ca2ad]">{workout.equipment}</p>
                 <WorkoutStats workout={workout} />
               </div>
-              <Link href={`/workout/${workout.id}`} className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full border border-[#414854] px-[22px] text-[14px] text-[#e3e4e8] no-underline transition-colors hover:border-[#777e8a] hover:bg-[#1c1f26] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c9ff00] max-[700px]:ml-auto max-[520px]:w-full">View Details</Link>
+              <div className="ml-auto flex shrink-0 items-center gap-2 max-[700px]:w-full max-[700px]:justify-end max-[520px]:flex-wrap">
+                <Link href={`/workout/${workout.id}`} className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-[#414854] px-[22px] text-[14px] text-[#e3e4e8] no-underline transition-colors hover:border-[#777e8a] hover:bg-[#1c1f26] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c9ff00] max-[520px]:flex-1">View Details</Link>
+                {tab === "plan" && (
+                  <>
+                    <button type="button" onClick={() => markDone(workout.id)} disabled={doneIds.includes(workout.id)} aria-pressed={doneIds.includes(workout.id)} className={`inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-4 text-[14px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c9ff00] disabled:cursor-default ${doneIds.includes(workout.id) ? "border border-[#3b4325] text-[#c9ff00]" : "bg-[#c9ff00] text-[#111207] hover:bg-[#d8ff45]"}`}>
+                      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current stroke-[2]"><path d="m4 10 4 4 8-8" /></svg>
+                      {doneIds.includes(workout.id) ? "Done" : "Mark as Done"}
+                    </button>
+                    <button type="button" onClick={() => removeFromPlan(workout.id)} aria-label={`Remove ${workout.name} from today's plan`} className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[#9299a6] transition-colors hover:bg-[#22252d] hover:text-[#f3f3f4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9ff00]">
+                      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current stroke-[1.7]"><path d="m5 5 10 10M15 5 5 15" /></svg>
+                    </button>
+                  </>
+                )}
+              </div>
             </article>
           ))}
         </section>
