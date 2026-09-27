@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import logo from "@/assets/logo.png";
+import { useFitLog } from "@/components/shared/FitLogProvider";
 
 const navigation = [
   { label: "Workouts", href: "/" },
@@ -12,6 +13,7 @@ const navigation = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { plannedIds, savedIds } = useFitLog();
   const isPlanPage = pathname === "/my-plan";
   const isWorkoutPage = pathname === "/" || pathname.startsWith("/workout/");
 
@@ -41,13 +43,13 @@ export default function Navbar() {
         </nav>
 
         <div className="flex justify-self-end items-center gap-7 max-[700px]:col-start-2 max-[700px]:row-start-1 max-[700px]:gap-[13px] max-[360px]:gap-2">
-          <Link className="inline-flex items-center gap-[10px] text-[14px] font-normal text-[#d4d5d9] no-underline hover:text-[#f0f0f2] max-[700px]:gap-[6px] max-[700px]:text-[12px] max-[360px]:gap-1 max-[360px]:text-[11px]" href="/my-plan?tab=plan" aria-label="Plan, 0 workouts">
+          <Link className="inline-flex items-center gap-[10px] text-[14px] font-normal text-[#d4d5d9] no-underline hover:text-[#f0f0f2] max-[700px]:gap-[6px] max-[700px]:text-[12px] max-[360px]:gap-1 max-[360px]:text-[11px]" href="/my-plan?tab=plan" aria-label={`Plan, ${plannedIds.length} workouts`}>
             <span>Plan</span>
-            <span className="grid h-[25px] w-[25px] place-items-center rounded-full bg-[#c9ff00] text-[13px] font-bold leading-none text-[#101207] max-[700px]:h-[22px] max-[700px]:w-[22px] max-[700px]:text-[12px]" aria-hidden="true">0</span>
+            <span className="grid h-[25px] w-[25px] place-items-center rounded-full bg-[#c9ff00] text-[13px] font-bold leading-none text-[#101207] max-[700px]:h-[22px] max-[700px]:w-[22px] max-[700px]:text-[12px]" aria-hidden="true">{plannedIds.length}</span>
           </Link>
-          <Link className="inline-flex items-center gap-[10px] text-[14px] font-normal text-[#a6a8b0] no-underline hover:text-[#f0f0f2] max-[700px]:gap-[6px] max-[700px]:text-[12px] max-[360px]:gap-1 max-[360px]:text-[11px]" href="/my-plan?tab=saved" aria-label="Saved, 0 workouts">
+          <Link className="inline-flex items-center gap-[10px] text-[14px] font-normal text-[#a6a8b0] no-underline hover:text-[#f0f0f2] max-[700px]:gap-[6px] max-[700px]:text-[12px] max-[360px]:gap-1 max-[360px]:text-[11px]" href="/my-plan?tab=saved" aria-label={`Saved, ${savedIds.length} workouts`}>
             <span>Saved</span>
-            <span className="grid h-[25px] w-[25px] place-items-center rounded-full border border-[#383a40] text-[13px] leading-none text-[#d1d2d8] max-[700px]:h-[22px] max-[700px]:w-[22px] max-[700px]:text-[12px]" aria-hidden="true">0</span>
+            <span className="grid h-[25px] w-[25px] place-items-center rounded-full border border-[#383a40] text-[13px] leading-none text-[#d1d2d8] max-[700px]:h-[22px] max-[700px]:w-[22px] max-[700px]:text-[12px]" aria-hidden="true">{savedIds.length}</span>
           </Link>
         </div>
       </div>
