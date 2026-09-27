@@ -28,7 +28,7 @@ export default function MyPlan({ workouts, initialTab }: { workouts: Workout[]; 
   const calories = plannedWorkouts.reduce((total, workout) => total + workout.caloriesBurned, 0);
 
   return (
-    <main className="mx-auto min-h-[calc(100vh-102px)] w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[60px] pb-16 pt-[54px] max-[700px]:px-4 max-[700px]:pt-8">
+    <main className="mx-auto w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[60px] pb-16 pt-[54px] max-[700px]:px-4 max-[700px]:pt-8">
       <header className="mb-[31px]">
         <h1 className="font-[Impact,'Arial_Narrow',sans-serif] text-[40px] font-bold uppercase leading-none text-[#f3f3f4] max-[520px]:text-[34px]">My Plan</h1>
         <p className="mt-[10px] text-[18px] leading-6 text-[#9ca2ad] max-[520px]:text-base">Cap of five lifts for today. Finish them, then load more.</p>

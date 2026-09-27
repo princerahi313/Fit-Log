@@ -12,7 +12,7 @@ export default async function WorkoutPage({ params }: PageProps<"/workout/[id]">
   } catch (error) {
     console.error(`Failed to load workout ${id}:`, error);
     return (
-      <main className="mx-auto min-h-[calc(100vh-102px)] w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[29px] py-[60px] max-[700px]:px-4 max-[700px]:py-8">
+      <main className="mx-auto w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[29px] py-[60px] max-[700px]:px-4 max-[700px]:py-8">
         <p role="status" className="rounded-xl border border-[#34363d] bg-[#15161a] p-6 text-[#a3a8b4]">This workout couldn&apos;t be loaded. Please try again.</p>
       </main>
     );
@@ -21,7 +21,7 @@ export default async function WorkoutPage({ params }: PageProps<"/workout/[id]">
   if (!workout) notFound();
 
   return (
-    <main className="mx-auto min-h-[calc(100vh-102px)] w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[29px] py-[60px] max-[700px]:px-4 max-[700px]:py-8">
+    <main className="mx-auto w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[29px] py-[60px] max-[700px]:px-4 max-[700px]:py-8">
       <div className="grid grid-cols-2 items-start gap-[60px] max-[850px]:grid-cols-1 max-[850px]:gap-8">
         <div className="relative aspect-square overflow-hidden rounded-[20px] bg-[#15161a] max-[850px]:aspect-[1.3/1] max-[520px]:aspect-square">
           <Image className="object-cover" src={workout.image} alt={`${workout.name} exercise illustration`} fill unoptimized sizes="(max-width: 850px) 100vw, 50vw" priority />

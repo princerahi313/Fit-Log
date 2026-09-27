@@ -10,7 +10,7 @@ export default async function MyPlanPage({ searchParams }: PageProps<"/my-plan">
   } catch (error) {
     console.error("Failed to load workouts for My Plan:", error);
     return (
-      <main className="mx-auto min-h-[calc(100vh-102px)] w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[29px] py-[60px] max-[700px]:px-4 max-[700px]:py-8">
+      <main className="mx-auto w-full max-w-[1600px] flex-1 border-x border-[#1b1c1f] bg-[#0b0c0e] px-[29px] py-[60px] max-[700px]:px-4 max-[700px]:py-8">
         <p role="status" className="rounded-xl border border-[#34363d] bg-[#15161a] p-6 text-[#a3a8b4]">Your workouts couldn&apos;t be loaded. Please refresh to try again.</p>
       </main>
     );

@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import Footer from "@/components/shared/footer";
 
 type FitLogContextValue = {
   plannedIds: number[];
@@ -69,6 +70,7 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
   return (
     <FitLogContext.Provider value={{ plannedIds, savedIds, addToPlan, saveForLater }}>
       {children}
+      <Footer />
       <ToastContainer
         position="bottom-center"
         autoClose={2600}
