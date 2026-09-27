@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 type FitLogContextValue = {
   plannedIds: number[];
@@ -17,7 +18,6 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
   const [plannedIds, setPlannedIds] = useState<number[]>([]);
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [ready, setReady] = useState(false);
-  const [toast, setToast] = useState("");
 
   useEffect(() => {
     try {
@@ -44,13 +44,7 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
     }
   }, [plannedIds, ready, savedIds]);
 
-  useEffect(() => {
-    if (!toast) return;
-    const timeout = window.setTimeout(() => setToast(""), 2600);
-    return () => window.clearTimeout(timeout);
-  }, [toast]);
-
-  const announce = useCallback((message: string) => setToast(message), []);
+  const announce = useCallback((message: string) => toast(message), []);
   const addToPlan = useCallback((id: number) => {
     if (plannedIds.includes(id)) {
       announce("This workout is already in today’s plan");
@@ -71,9 +65,16 @@ export function FitLogProvider({ children }: { children: ReactNode }) {
   return (
     <FitLogContext.Provider value={{ plannedIds, savedIds, addToPlan, saveForLater }}>
       {children}
-      <div className={`pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition duration-200 ${toast ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"}`} role="status" aria-live="polite" aria-atomic="true">
-        <span className="block rounded-xl border border-[#3b4325] bg-[#1a2110] px-5 py-3 text-sm font-medium text-[#d7ff37] shadow-[0_12px_36px_rgba(0,0,0,.45)]">{toast}</span>
-      </div>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2600}
+        hideProgressBar
+        closeButton={false}
+        draggable={false}
+        theme="dark"
+        toastClassName="!min-h-0 !rounded-xl !border !border-[#3b4325] !bg-[#1a2110] !px-5 !py-3 !text-sm !font-medium !text-[#d7ff37] !shadow-[0_12px_36px_rgba(0,0,0,.45)]"
+        bodyClassName="!p-0 !text-inherit"
+      />
     </FitLogContext.Provider>
   );
 }
